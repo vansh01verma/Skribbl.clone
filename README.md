@@ -8,6 +8,26 @@ A real-time multiplayer drawing and guessing game inspired by Skribbl.io, built 
 
 https://skribbl-clone-h16k.onrender.com
 
+## 📸 Screenshots
+
+### 🏠 Lobby
+
+![Skribbl Clone Lobby](screenshots/lobby.png)
+
+### 📝 Word Selection
+
+![Three-word selection](screenshots/word-selection.png)
+
+### 🎨 Multiplayer Drawing
+
+![Multiplayer drawing](screenshots/multiplayer-drawing.png)
+
+### 🏆 Final Leaderboard
+
+![Final leaderboard](screenshots/leaderboard.png)
+
+> These screenshots show the main lobby, word-selection flow, real-time multiplayer drawing, and final scoring experience.
+
 ## ✨ Features
 
 - 🎮 Create a room with configurable settings
@@ -101,6 +121,11 @@ Skribbl.clone/
 │   ├── index.html
 │   ├── script.js
 │   └── style.css
+├── screenshots/
+│   ├── lobby.png
+│   ├── word-selection.png
+│   ├── multiplayer-drawing.png
+│   └── leaderboard.png
 ├── server.js
 ├── package.json
 ├── package-lock.json
