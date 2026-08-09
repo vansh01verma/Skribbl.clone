@@ -11,7 +11,8 @@ https://skribbl-clone-h16k.onrender.com
 ## ✨ Features
 
 - 🎮 Create a private game room
-- 👥 Join a room using a room code
+- 👥 Up to **10 players per room**
+- 🔑 Join a room using a room code
 - 🎨 Real-time collaborative drawing
 - 💬 Real-time chat and guessing
 - 🎯 Automatic correct-guess detection
@@ -41,8 +42,8 @@ https://skribbl-clone-h16k.onrender.com
 1. Open the [live game](https://skribbl-clone-h16k.onrender.com).
 2. Enter your player name.
 3. Create a room or enter an existing room code.
-4. A second player joins the room.
-5. The round starts automatically.
+4. Up to 10 players can join the same room.
+5. The round starts automatically when at least 2 players are present.
 6. The selected drawer receives the secret word.
 7. The drawer draws on the canvas in real time.
 8. Other players submit guesses through chat.
@@ -99,6 +100,7 @@ The application is deployed as a Node.js web service on Render. The server uses 
 ## 📌 Project Status
 
 - ✅ Publicly deployed
+- ✅ Up to 10 players per room
 - ✅ Room creation and joining
 - ✅ Real-time drawing
 - ✅ Real-time guessing/chat
