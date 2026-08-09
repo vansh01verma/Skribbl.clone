@@ -7,44 +7,47 @@
     <link rel="stylesheet" href="/style.css">
 </head>
 <body>
-    <div id="app">
+    <div class="app">
         <section id="lobby" class="screen">
             <div class="card">
-                <h1>🎨 Skribbl Clone</h1>
+                <h2>🎨 Skribbl Clone</h2>
                 <input id="playerName" type="text" placeholder="Enter your name" maxlength="20">
-                <div class="actions">
-                    <button id="createRoom">Create Room</button>
-                    <div class="join-row">
-                        <input id="roomCode" type="text" placeholder="Room code" maxlength="6">
-                        <button id="joinRoom">Join Room</button>
-                    </div>
-                </div>
-                <p id="lobbyMessage"></p>
+                <input id="roomInput" type="text" placeholder="Room ID to join" maxlength="6">
+                <button id="createRoom">Create Room</button>
+                <button id="joinRoom">Join Room</button>
+                <p id="lobbyError" class="error"></p>
             </div>
         </section>
 
         <section id="game" class="screen hidden">
             <header class="topbar">
-                <div><strong>Room:</strong> <span id="roomId"></span></div>
+                <div><strong>Room:</strong> <span id="roomDisplay"></span></div>
+                <div id="gameStatus">⏳ Waiting for game...</div>
                 <div><strong>Time:</strong> <span id="timer">0</span></div>
-                <div id="wordBox">Word: <span id="word">???</span></div>
+                <div id="connectionStatus">🟡 Connecting...</div>
             </header>
 
             <main class="game-layout">
-                <div class="canvas-wrap">
-                    <canvas id="drawingCanvas" width="800" height="500"></canvas>
-                    <div id="roundMessage"></div>
-                </div>
-
                 <aside class="sidebar">
-                    <h2>Players</h2>
-                    <ul id="players"></ul>
-                    <div class="chat">
-                        <div id="messages" class="messages"></div>
-                        <div class="chat-input">
-                            <input id="messageInput" type="text" placeholder="Type your guess..." maxlength="100">
-                            <button id="sendMessage">Send</button>
-                        </div>
+                    <h3>Players</h3>
+                    <ul id="playerList"></ul>
+                </aside>
+
+                <section class="drawing-area">
+                    <div class="word-box" id="wordLabel">🔤 Guess the word!</div>
+                    <canvas id="canvas" width="800" height="500"></canvas>
+                    <div class="tools">
+                        <label>Brush <input id="brushSize" type="range" min="1" max="30" value="5"></label>
+                        <button id="clearCanvas">Clear</button>
+                    </div>
+                </section>
+
+                <aside class="chat-panel">
+                    <h3>Chat / Guesses</h3>
+                    <div id="messages" class="messages"></div>
+                    <div class="chat-input">
+                        <input id="messageInput" type="text" placeholder="Type your guess..." maxlength="100">
+                        <button id="sendMessage">Send</button>
                     </div>
                 </aside>
             </main>
