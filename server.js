@@ -10,6 +10,7 @@ const io = new Server(server);
 app.use(express.static(path.join(__dirname, "public")));
 
 const rooms = {};
+const MAX_PLAYERS = 10;
 const WORDS = ["apple","house","car","tree","computer","phone","dog","cat","pizza","rocket","football","school","book","flower","mountain","river","chair","table"];
 
 function generateRoomId() {
@@ -80,7 +81,7 @@ io.on("connection", socket => {
         roomId = roomId.trim().toUpperCase();
         const room = rooms[roomId];
         if (!room) return socket.emit("room_error", "Room not found");
-        if (room.players.length >= 2) return socket.emit("room_error", "Room is full");
+        if (room.players.length >= MAX_PLAYERS) return socket.emit("room_error", `Room is full (maximum ${MAX_PLAYERS} players)`);
         room.players.push({ id: socket.id, name: playerName, score: 0 });
         socket.join(roomId);
         socket.roomId = roomId;
