@@ -8,30 +8,30 @@
 </head>
 <body>
 <div class="app">
-    <header class="site-header">
-        <div class="brand"><span class="brand-mark">✏️</span><span>SKRIBBL</span><span class="brand-dot">.</span></div>
-        <div id="connectionStatus" class="connection-status"><span class="status-dot"></span> Connecting...</div>
+    <header>
+        <h1>🎨 Skribbl Clone</h1>
+        <div id="connectionStatus"><span class="status-dot"></span> Connecting...</div>
     </header>
 
     <main>
-        <section id="lobby" class="screen lobby-screen">
-            <div class="lobby-card">
-                <div class="hero-icon">🎨</div>
-                <p class="eyebrow">REAL-TIME DRAWING GAME</p>
-                <h1>Draw it. Guess it.<br><span>Have fun.</span></h1>
-                <p class="subtitle">Challenge a friend to a quick drawing battle.</p>
-                <div class="form-group">
-                    <label for="playerName">Your name</label>
-                    <input id="playerName" type="text" maxlength="18" placeholder="Enter your nickname" autocomplete="off">
-                </div>
-                <button id="createRoom" class="primary-btn">Create a room <span>→</span></button>
-                <div class="divider"><span>OR JOIN A ROOM</span></div>
+        <section id="lobby" class="screen">
+            <div class="card">
+                <div class="paint-icon">🖌️</div>
+                <h2>Draw & Guess</h2>
+                <p class="intro">Create a room and challenge your friend!</p>
+
+                <input id="playerName" type="text" maxlength="18" placeholder="Enter your name" autocomplete="off">
+                <button id="createRoom" class="main-button">Create Room</button>
+
+                <div class="or"><span>OR</span></div>
+
                 <div class="join-row">
-                    <input id="roomInput" type="text" maxlength="6" placeholder="ROOM CODE" autocomplete="off">
-                    <button id="joinRoom" class="secondary-btn">Join</button>
+                    <input id="roomInput" type="text" maxlength="6" placeholder="Room Code" autocomplete="off">
+                    <button id="joinRoom" class="join-button">Join Room</button>
                 </div>
+
                 <p id="lobbyError" class="error"></p>
-                <div class="feature-row"><span>⚡ Real-time</span><span>🎯 Live scoring</span><span>👥 2 players</span></div>
+                <p class="hint">🎯 2 players • ⚡ Real-time • 🏆 Live scores</p>
             </div>
         </section>
 
@@ -39,11 +39,11 @@
             <div class="game-topbar">
                 <div class="room-pill"><span>ROOM</span><strong id="roomDisplay">------</strong></div>
                 <div id="gameStatus" class="game-status">⏳ Waiting for game...</div>
-                <div class="timer-wrap"><span class="timer-label">TIME</span><strong id="timer">60</strong></div>
+                <div class="timer-wrap"><span>TIME</span><strong id="timer">60</strong></div>
             </div>
             <div class="game-layout">
                 <aside class="sidebar players-card">
-                    <div class="panel-heading"><h3>Players</h3><span class="players-count">2</span></div>
+                    <h3>Players</h3>
                     <ul id="playerList"></ul>
                 </aside>
                 <section class="drawing-area">
@@ -55,7 +55,7 @@
                     </div>
                 </section>
                 <aside class="chat-panel">
-                    <div class="panel-heading"><h3>💬 Chat</h3><span>Live</span></div>
+                    <h3>💬 Chat</h3>
                     <div id="messages" class="messages"></div>
                     <div class="chat-input">
                         <input id="messageInput" type="text" maxlength="120" placeholder="Type your guess..." autocomplete="off">
