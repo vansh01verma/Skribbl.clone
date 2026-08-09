@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Skribbl Clone</title>
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+    <div id="app">
+        <section id="lobby" class="screen">
+            <div class="card">
+                <h1>🎨 Skribbl Clone</h1>
+                <input id="playerName" type="text" placeholder="Enter your name" maxlength="20">
+                <div class="actions">
+                    <button id="createRoom">Create Room</button>
+                    <div class="join-row">
+                        <input id="roomCode" type="text" placeholder="Room code" maxlength="6">
+                        <button id="joinRoom">Join Room</button>
+                    </div>
+                </div>
+                <p id="lobbyMessage"></p>
+            </div>
+        </section>
+
+        <section id="game" class="screen hidden">
+            <header class="topbar">
+                <div><strong>Room:</strong> <span id="roomId"></span></div>
+                <div><strong>Time:</strong> <span id="timer">0</span></div>
+                <div id="wordBox">Word: <span id="word">???</span></div>
+            </header>
+
+            <main class="game-layout">
+                <div class="canvas-wrap">
+                    <canvas id="drawingCanvas" width="800" height="500"></canvas>
+                    <div id="roundMessage"></div>
+                </div>
+
+                <aside class="sidebar">
+                    <h2>Players</h2>
+                    <ul id="players"></ul>
+                    <div class="chat">
+                        <div id="messages" class="messages"></div>
+                        <div class="chat-input">
+                            <input id="messageInput" type="text" placeholder="Type your guess..." maxlength="100">
+                            <button id="sendMessage">Send</button>
+                        </div>
+                    </div>
+                </aside>
+            </main>
+        </section>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/script.js"></script>
+</body>
+</html>
