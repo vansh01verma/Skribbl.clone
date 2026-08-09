@@ -3,58 +3,70 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Skribbl Clone</title>
+    <title>Skribbl Clone — Draw & Guess</title>
     <link rel="stylesheet" href="/style.css">
 </head>
 <body>
-    <div class="app">
-        <section id="lobby" class="screen">
-            <div class="card">
-                <h2>🎨 Skribbl Clone</h2>
-                <input id="playerName" type="text" placeholder="Enter your name" maxlength="20">
-                <input id="roomInput" type="text" placeholder="Room ID to join" maxlength="6">
-                <button id="createRoom">Create Room</button>
-                <button id="joinRoom">Join Room</button>
+<div class="app">
+    <header class="site-header">
+        <div class="brand"><span class="brand-mark">✏️</span><span>SKRIBBL</span><span class="brand-dot">.</span></div>
+        <div id="connectionStatus" class="connection-status"><span class="status-dot"></span> Connecting...</div>
+    </header>
+
+    <main>
+        <section id="lobby" class="screen lobby-screen">
+            <div class="lobby-card">
+                <div class="hero-icon">🎨</div>
+                <p class="eyebrow">REAL-TIME DRAWING GAME</p>
+                <h1>Draw it. Guess it.<br><span>Have fun.</span></h1>
+                <p class="subtitle">Challenge a friend to a quick drawing battle.</p>
+                <div class="form-group">
+                    <label for="playerName">Your name</label>
+                    <input id="playerName" type="text" maxlength="18" placeholder="Enter your nickname" autocomplete="off">
+                </div>
+                <button id="createRoom" class="primary-btn">Create a room <span>→</span></button>
+                <div class="divider"><span>OR JOIN A ROOM</span></div>
+                <div class="join-row">
+                    <input id="roomInput" type="text" maxlength="6" placeholder="ROOM CODE" autocomplete="off">
+                    <button id="joinRoom" class="secondary-btn">Join</button>
+                </div>
                 <p id="lobbyError" class="error"></p>
+                <div class="feature-row"><span>⚡ Real-time</span><span>🎯 Live scoring</span><span>👥 2 players</span></div>
             </div>
         </section>
 
-        <section id="game" class="screen hidden">
-            <header class="topbar">
-                <div><strong>Room:</strong> <span id="roomDisplay"></span></div>
-                <div id="gameStatus">⏳ Waiting for game...</div>
-                <div><strong>Time:</strong> <span id="timer">0</span></div>
-                <div id="connectionStatus">🟡 Connecting...</div>
-            </header>
-
-            <main class="game-layout">
-                <aside class="sidebar">
-                    <h3>Players</h3>
+        <section id="game" class="hidden game-screen">
+            <div class="game-topbar">
+                <div class="room-pill"><span>ROOM</span><strong id="roomDisplay">------</strong></div>
+                <div id="gameStatus" class="game-status">⏳ Waiting for game...</div>
+                <div class="timer-wrap"><span class="timer-label">TIME</span><strong id="timer">60</strong></div>
+            </div>
+            <div class="game-layout">
+                <aside class="sidebar players-card">
+                    <div class="panel-heading"><h3>Players</h3><span class="players-count">2</span></div>
                     <ul id="playerList"></ul>
                 </aside>
-
                 <section class="drawing-area">
-                    <div class="word-box" id="wordLabel">🔤 Guess the word!</div>
-                    <canvas id="canvas" width="800" height="500"></canvas>
+                    <div id="wordLabel" class="word-box">🔤 Guess the word!</div>
+                    <div class="canvas-frame"><canvas id="canvas" width="800" height="500"></canvas></div>
                     <div class="tools">
-                        <label>Brush <input id="brushSize" type="range" min="1" max="30" value="5"></label>
-                        <button id="clearCanvas">Clear</button>
+                        <label>Brush <input id="brushSize" type="range" min="2" max="20" value="5"></label>
+                        <button id="clearCanvas" class="tool-btn">🧹 Clear</button>
                     </div>
                 </section>
-
                 <aside class="chat-panel">
-                    <h3>Chat / Guesses</h3>
+                    <div class="panel-heading"><h3>💬 Chat</h3><span>Live</span></div>
                     <div id="messages" class="messages"></div>
                     <div class="chat-input">
-                        <input id="messageInput" type="text" placeholder="Type your guess..." maxlength="100">
+                        <input id="messageInput" type="text" maxlength="120" placeholder="Type your guess..." autocomplete="off">
                         <button id="sendMessage">Send</button>
                     </div>
                 </aside>
-            </main>
+            </div>
         </section>
-    </div>
-
-    <script src="/socket.io/socket.io.js"></script>
-    <script src="/script.js"></script>
+    </main>
+</div>
+<script src="/socket.io/socket.io.js"></script>
+<script src="/script.js"></script>
 </body>
 </html>
