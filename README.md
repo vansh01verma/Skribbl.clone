@@ -1,6 +1,6 @@
 # 🎨 Skribbl Clone
 
-A real-time multiplayer drawing and guessing game inspired by Skribbl.io, built with **Node.js, Express, Socket.IO, HTML, CSS, and JavaScript**.
+A real-time multiplayer drawing and guessing game inspired by Skribbl.io, built with **Node.js, Express, Socket.IO, HTML, CSS, JavaScript, and HTML5 Canvas**.
 
 ## 🚀 Live Demo
 
@@ -10,14 +10,24 @@ https://skribbl-clone-h16k.onrender.com
 
 ## ✨ Features
 
-- 🎮 Create a private game room
-- 👥 Up to **10 players per room**
-- 🔑 Join a room using a room code
-- 🎨 Real-time collaborative drawing
+- 🎮 Create a room with configurable settings
+- 👑 Host-controlled lobby and game start
+- 👥 Configurable maximum players (2–20)
+- 🔄 Configurable rounds (2–10)
+- ⏱️ Configurable draw time (15–240 seconds)
+- 🎯 Configurable word choices (1–5)
+- 💡 Configurable hints (0–5)
+- 🔑 Join using a room code or invite link
+- 🎨 Real-time collaborative drawing with HTML5 Canvas
+- 🌈 Multiple drawing colors
+- 🖌️ Adjustable brush size
+- ↶ Synchronized undo
+- 🧹 Clear canvas
+- 📝 Drawer receives multiple word choices
 - 💬 Real-time chat and guessing
 - 🎯 Automatic correct-guess detection
-- 🏆 Player scoring
-- ⏱️ Timed rounds
+- 🏆 Scoring and final leaderboard
+- 🥇 Game-over winner screen
 - 🔄 Automatic drawer rotation
 - 📱 Browser-based gameplay
 
@@ -37,18 +47,51 @@ https://skribbl-clone-h16k.onrender.com
 ### Deployment
 - Render
 
+## 🧠 Architecture Overview
+
+```text
+Browser A (Drawer)
+       │
+       │ Socket.IO events
+       ▼
+   Node.js + Express + Socket.IO Server
+       │
+       ├── Room state
+       ├── Player scores
+       ├── Round / timer state
+       ├── Secret word + choices
+       ├── Drawing stroke history
+       └── Game settings
+       │
+       │ Socket.IO broadcasts
+       ▼
+Browser B / Other Players
+       │
+       ├── Live drawing
+       ├── Hints
+       ├── Chat / guesses
+       ├── Scores
+       └── Round updates
+```
+
+The server is authoritative for room membership, the secret word, scoring, drawing permissions, round progression, settings, and the final leaderboard.
+
 ## 🎮 Core Game Flow
 
 1. Open the [live game](https://skribbl-clone-h16k.onrender.com).
 2. Enter your player name.
-3. Create a room or enter an existing room code.
-4. Up to 10 players can join the same room.
-5. The round starts automatically when at least 2 players are present.
-6. The selected drawer receives the secret word.
-7. The drawer draws on the canvas in real time.
-8. Other players submit guesses through chat.
-9. A correct guess awards points and ends the round.
-10. The next round starts with a new drawer and word.
+3. Create a room.
+4. The host configures players, rounds, draw time, word choices, and hints.
+5. Share the room code or invite link.
+6. Players join the lobby.
+7. The host starts the game.
+8. The drawer receives the configured number of secret-word choices.
+9. The drawer selects one word and draws on the canvas in real time.
+10. Other players submit guesses through chat.
+11. A correct guess awards points and ends the round.
+12. Hints progressively reveal letters according to the room settings.
+13. The drawer rotates and the next round begins.
+14. After the configured number of rounds, the final leaderboard and winner are displayed.
 
 ## 📂 Project Structure
 
@@ -93,23 +136,32 @@ http://localhost:3000
 
 ## 🌐 Deployment
 
-The application is deployed as a Node.js web service on Render. The server uses the platform-provided `PORT` environment variable and supports Socket.IO WebSocket connections for real-time multiplayer gameplay.
+The application is deployed as a Node.js web service on Render. The server listens on the platform-provided `PORT` environment variable and supports Socket.IO WebSocket connections for real-time multiplayer gameplay.
 
 **Production URL:** https://skribbl-clone-h16k.onrender.com
 
-## 📌 Project Status
+## 📌 Assignment Checklist
 
-- ✅ Publicly deployed
-- ✅ Up to 10 players per room
 - ✅ Room creation and joining
+- ✅ Host-controlled lobby
+- ✅ Configurable room settings
+- ✅ Room code and invite link
+- ✅ Turn-based rounds
 - ✅ Real-time drawing
-- ✅ Real-time guessing/chat
-- ✅ Scoring system
-- ✅ Timed rounds
-- ✅ Automatic round progression
+- ✅ 1–5 word choices for the drawer
+- ✅ Guessing and scoring
+- ✅ Leaderboard and winner
+- ✅ Game-end screen
+- ✅ Brush, colors, undo, and clear
+- ✅ Hints
+- ✅ Chat
+- ✅ Countdown timer
+- ✅ Public deployment
 
 ## 👨‍💻 Author
 
 **Vansh Verma**
 
 GitHub: https://github.com/vansh01verma
+
+Repository: https://github.com/vansh01verma/Skribbl.clone
