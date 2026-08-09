@@ -29,21 +29,11 @@
                 <aside class="sidebar players-card"><h3>Players</h3><ul id="playerList"></ul></aside>
                 <section class="drawing-area">
                     <div id="wordLabel" class="word-box">🔤 Guess the word!</div>
+                    <div id="wordChoices" class="word-choices hidden"><div class="choices-title">🎯 Choose a word to draw</div><div id="choiceButtons" class="choice-buttons"></div></div>
+                    <div id="hintPanel" class="hint-panel hidden" aria-live="polite"><div class="hint-icon">💡</div><div class="hint-content"><div class="hint-title">WORD HINT</div><div id="hintWord" class="hint-word">_ _ _ _ _</div><div id="hintProgress" class="hint-progress">Waiting for the first hint...</div></div><div class="hint-count"><strong id="hiddenLetters">0</strong><span>hidden</span></div></div>
                     <div class="canvas-tools-row">
-                        <div class="color-palette">
-                            <span class="palette-title">COLORS</span>
-                            <button class="color-btn active" data-color="#111111" style="--swatch:#111111" title="Black"></button>
-                            <button class="color-btn" data-color="#ef4444" style="--swatch:#ef4444" title="Red"></button>
-                            <button class="color-btn" data-color="#f97316" style="--swatch:#f97316" title="Orange"></button>
-                            <button class="color-btn" data-color="#facc15" style="--swatch:#facc15" title="Yellow"></button>
-                            <button class="color-btn" data-color="#22c55e" style="--swatch:#22c55e" title="Green"></button>
-                            <button class="color-btn" data-color="#06b6d4" style="--swatch:#06b6d4" title="Cyan"></button>
-                            <button class="color-btn" data-color="#3b82f6" style="--swatch:#3b82f6" title="Blue"></button>
-                            <button class="color-btn" data-color="#8b5cf6" style="--swatch:#8b5cf6" title="Purple"></button>
-                            <button class="color-btn" data-color="#ec4899" style="--swatch:#ec4899" title="Pink"></button>
-                            <button class="color-btn" data-color="#ffffff" style="--swatch:#ffffff" title="White"></button>
-                        </div>
-                        <div class="tools"><label>Brush <input id="brushSize" type="range" min="2" max="20" value="5"></label><button id="clearCanvas" class="tool-btn">🧹 Clear</button></div>
+                        <div class="color-palette"><span class="palette-title">COLORS</span><button class="color-btn active" data-color="#111111" style="--swatch:#111111" title="Black"></button><button class="color-btn" data-color="#ef4444" style="--swatch:#ef4444" title="Red"></button><button class="color-btn" data-color="#f97316" style="--swatch:#f97316" title="Orange"></button><button class="color-btn" data-color="#facc15" style="--swatch:#facc15" title="Yellow"></button><button class="color-btn" data-color="#22c55e" style="--swatch:#22c55e" title="Green"></button><button class="color-btn" data-color="#06b6d4" style="--swatch:#06b6d4" title="Cyan"></button><button class="color-btn" data-color="#3b82f6" style="--swatch:#3b82f6" title="Blue"></button><button class="color-btn" data-color="#8b5cf6" style="--swatch:#8b5cf6" title="Purple"></button><button class="color-btn" data-color="#ec4899" style="--swatch:#ec4899" title="Pink"></button><button class="color-btn" data-color="#ffffff" style="--swatch:#ffffff" title="White"></button></div>
+                        <div class="tools"><label>Brush <input id="brushSize" type="range" min="2" max="20" value="5"></label><button id="undoCanvas" class="tool-btn">↶ Undo</button><button id="clearCanvas" class="tool-btn">🧹 Clear</button></div>
                     </div>
                     <div class="canvas-frame"><canvas id="canvas" width="800" height="500"></canvas></div>
                 </section>
