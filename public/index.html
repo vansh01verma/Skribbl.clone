@@ -12,61 +12,46 @@
         <h1>🎨 Skribbl Clone</h1>
         <div id="connectionStatus"><span class="status-dot"></span> Connecting...</div>
     </header>
-
     <main>
         <section id="lobby" class="screen">
             <div class="card">
-                <div class="paint-icon">🖌️</div>
-                <h2>Draw & Guess</h2>
-                <p class="intro">Create a room and challenge your friend!</p>
-
+                <div class="paint-icon">🖌️</div><h2>Draw & Guess</h2><p class="intro">Create a room and challenge your friend!</p>
                 <input id="playerName" type="text" maxlength="18" placeholder="Enter your name" autocomplete="off">
                 <button id="createRoom" class="main-button">Create Room</button>
-
                 <div class="or"><span>OR</span></div>
-
-                <div class="join-row">
-                    <input id="roomInput" type="text" maxlength="6" placeholder="Room Code" autocomplete="off">
-                    <button id="joinRoom" class="join-button">Join Room</button>
-                </div>
-
-                <p id="lobbyError" class="error"></p>
-                <p class="hint">🎯 2 players • ⚡ Real-time • 🏆 Live scores</p>
+                <div class="join-row"><input id="roomInput" type="text" maxlength="6" placeholder="Room Code" autocomplete="off"><button id="joinRoom" class="join-button">Join Room</button></div>
+                <p id="lobbyError" class="error"></p><p class="hint">🎯 Multiplayer • ⚡ Real-time • 🏆 Live scores</p>
             </div>
         </section>
-
         <section id="game" class="hidden game-screen">
-            <div class="game-topbar">
-                <div class="room-pill"><span>ROOM</span><strong id="roomDisplay">------</strong></div>
-                <div id="gameStatus" class="game-status">⏳ Waiting for game...</div>
-                <div class="timer-wrap"><span>TIME</span><strong id="timer">60</strong></div>
-            </div>
+            <div class="game-topbar"><div class="room-pill"><span>ROOM</span><strong id="roomDisplay">------</strong></div><div id="gameStatus" class="game-status">⏳ Waiting for game...</div><div class="timer-wrap"><span>TIME</span><strong id="timer">60</strong></div></div>
             <div class="game-layout">
-                <aside class="sidebar players-card">
-                    <h3>Players</h3>
-                    <ul id="playerList"></ul>
-                </aside>
+                <aside class="sidebar players-card"><h3>Players</h3><ul id="playerList"></ul></aside>
                 <section class="drawing-area">
                     <div id="wordLabel" class="word-box">🔤 Guess the word!</div>
+                    <div class="canvas-tools-row">
+                        <div class="color-palette">
+                            <span class="palette-title">COLORS</span>
+                            <button class="color-btn active" data-color="#111111" style="--swatch:#111111" title="Black"></button>
+                            <button class="color-btn" data-color="#ef4444" style="--swatch:#ef4444" title="Red"></button>
+                            <button class="color-btn" data-color="#f97316" style="--swatch:#f97316" title="Orange"></button>
+                            <button class="color-btn" data-color="#facc15" style="--swatch:#facc15" title="Yellow"></button>
+                            <button class="color-btn" data-color="#22c55e" style="--swatch:#22c55e" title="Green"></button>
+                            <button class="color-btn" data-color="#06b6d4" style="--swatch:#06b6d4" title="Cyan"></button>
+                            <button class="color-btn" data-color="#3b82f6" style="--swatch:#3b82f6" title="Blue"></button>
+                            <button class="color-btn" data-color="#8b5cf6" style="--swatch:#8b5cf6" title="Purple"></button>
+                            <button class="color-btn" data-color="#ec4899" style="--swatch:#ec4899" title="Pink"></button>
+                            <button class="color-btn" data-color="#ffffff" style="--swatch:#ffffff" title="White"></button>
+                        </div>
+                        <div class="tools"><label>Brush <input id="brushSize" type="range" min="2" max="20" value="5"></label><button id="clearCanvas" class="tool-btn">🧹 Clear</button></div>
+                    </div>
                     <div class="canvas-frame"><canvas id="canvas" width="800" height="500"></canvas></div>
-                    <div class="tools">
-                        <label>Brush <input id="brushSize" type="range" min="2" max="20" value="5"></label>
-                        <button id="clearCanvas" class="tool-btn">🧹 Clear</button>
-                    </div>
                 </section>
-                <aside class="chat-panel">
-                    <h3>💬 Chat</h3>
-                    <div id="messages" class="messages"></div>
-                    <div class="chat-input">
-                        <input id="messageInput" type="text" maxlength="120" placeholder="Type your guess..." autocomplete="off">
-                        <button id="sendMessage">Send</button>
-                    </div>
-                </aside>
+                <aside class="chat-panel"><h3>💬 Chat</h3><div id="messages" class="messages"></div><div class="chat-input"><input id="messageInput" type="text" maxlength="120" placeholder="Type your guess..." autocomplete="off"><button id="sendMessage">Send</button></div></aside>
             </div>
         </section>
     </main>
 </div>
-<script src="/socket.io/socket.io.js"></script>
-<script src="/script.js"></script>
+<script src="/socket.io/socket.io.js"></script><script src="/script.js"></script>
 </body>
 </html>
