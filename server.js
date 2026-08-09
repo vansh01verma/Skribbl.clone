@@ -9,166 +9,36 @@ const io = new Server(server);
 app.use(express.static(path.join(__dirname, "public")));
 
 const rooms = {};
-const MAX_PLAYERS = 10;
-const ROUND_TIME = 60;
 const WORDS = ["apple","house","car","tree","computer","phone","dog","cat","pizza","rocket","football","school","book","flower","mountain","river","chair","table"];
 
 function generateRoomId(){return Math.random().toString(36).substring(2,8).toUpperCase()}
-function getWordChoices(){
-    const pool=[...WORDS];
-    const choices=[];
-    while(choices.length<3 && pool.length){
-        const index=Math.floor(Math.random()*pool.length);
-        choices.push(pool.splice(index,1)[0]);
-    }
-    return choices;
-}
-function createMaskedWord(word,revealedPositions){return word.split("").map((letter,index)=>revealedPositions.includes(index)?letter:"_").join(" ")}
+function getWordChoices(count){const pool=[...WORDS];const choices=[];while(choices.length<count&&pool.length){const i=Math.floor(Math.random()*pool.length);choices.push(pool.splice(i,1)[0]);}return choices}
+function createMaskedWord(word,revealed){return word.split("").map((c,i)=>revealed.includes(i)?c:"_").join(" ")}
 function updatePlayers(roomId){const room=rooms[roomId];if(!room)return;io.to(roomId).emit("players_updated",room.players.map(p=>({id:p.id,name:p.name,score:p.score})))}
-
-function revealHint(roomId){
-    const room=rooms[roomId];
-    if(!room || !room.gameStarted || !room.word)return;
-    const available=[];
-    for(let i=0;i<room.word.length;i++){
-        if(!room.revealedPositions.includes(i) && room.word[i]!==" ")available.push(i);
-    }
-    if(!available.length)return;
-    const position=available[Math.floor(Math.random()*available.length)];
-    room.revealedPositions.push(position);
-    io.to(roomId).except(room.drawerId).emit("hint_update",{wordLength:room.word.length,maskedWord:createMaskedWord(room.word,room.revealedPositions),hintsRevealed:room.revealedPositions.length,lettersLeft:room.word.length-room.revealedPositions.length});
-}
-
-function startRound(roomId){
-    const room=rooms[roomId];
-    if(!room || room.players.length<2)return;
-    if(room.timer){clearInterval(room.timer);room.timer=null}
-    room.gameStarted=false;
-    room.selectingWord=true;
-    room.timeLeft=ROUND_TIME;
-    room.word="";
-    room.wordChoices=getWordChoices();
-    room.revealedPositions=[];
-    room.strokes=[];
-    room.drawerIndex++;
-    if(room.drawerIndex>=room.players.length)room.drawerIndex=0;
-    room.drawerId=room.players[room.drawerIndex].id;
-
-    io.to(roomId).emit("game_started",{drawerId:room.drawerId,selecting:true});
-    io.to(room.drawerId).emit("word_options",{options:room.wordChoices});
-    io.to(roomId).except(room.drawerId).emit("word_waiting",{message:"🎨 The drawer is choosing a word..."});
-}
-
-function beginChosenWord(roomId,word){
-    const room=rooms[roomId];
-    if(!room || !room.selectingWord || !room.wordChoices.includes(word))return;
-    room.word=word;
-    room.selectingWord=false;
-    room.gameStarted=true;
-    room.timeLeft=ROUND_TIME;
-    room.revealedPositions=[];
-    room.strokes=[];
-
-    io.to(roomId).emit("word_chosen",{wordLength:room.word.length});
-    io.to(roomId).except(room.drawerId).emit("hint_update",{wordLength:room.word.length,maskedWord:createMaskedWord(room.word,[]),hintsRevealed:0,lettersLeft:room.word.length});
-    io.to(roomId).emit("timer_update",room.timeLeft);
-
-    room.timer=setInterval(()=>{
-        room.timeLeft--;
-        io.to(roomId).emit("timer_update",room.timeLeft);
-        if([45,30,15].includes(room.timeLeft))revealHint(roomId);
-        if(room.timeLeft<=0)endRound(roomId);
-    },1000);
-}
-
-function endRound(roomId){
-    const room=rooms[roomId];
-    if(!room)return;
-    if(room.timer){clearInterval(room.timer);room.timer=null}
-    const word=room.word;
-    room.gameStarted=false;
-    room.selectingWord=false;
-    io.to(roomId).emit("round_ended",{word});
-    setTimeout(()=>{if(rooms[roomId]&&rooms[roomId].players.length>=2)startRound(roomId)},3000);
-}
+function sendLobby(roomId){const r=rooms[roomId];if(!r)return;io.to(roomId).emit("lobby_state",{hostId:r.hostId,settings:r.settings,round:r.round,totalRounds:r.settings.rounds,playerCount:r.players.length})}
+function revealHint(roomId){const r=rooms[roomId];if(!r||!r.gameStarted||!r.word)return;const available=[];for(let i=0;i<r.word.length;i++){if(!r.revealedPositions.includes(i)&&r.word[i]!==" ")available.push(i)}if(!available.length)return;const pos=available[Math.floor(Math.random()*available.length)];r.revealedPositions.push(pos);io.to(roomId).except(r.drawerId).emit("hint_update",{wordLength:r.word.length,maskedWord:createMaskedWord(r.word,r.revealedPositions),hintsRevealed:r.revealedPositions.length,lettersLeft:r.word.length-r.revealedPositions.length})}
+function startRound(roomId){const r=rooms[roomId];if(!r||r.players.length<2||r.round>r.settings.rounds)return;if(r.timer){clearInterval(r.timer);r.timer=null}r.gameStarted=false;r.selectingWord=true;r.timeLeft=r.settings.drawTime;r.word="";r.wordChoices=getWordChoices(r.settings.wordChoices);r.revealedPositions=[];r.strokes=[];r.drawerIndex=(r.drawerIndex+1)%r.players.length;r.drawerId=r.players[r.drawerIndex].id;io.to(roomId).emit("game_started",{drawerId:r.drawerId,selecting:true,round:r.round,totalRounds:r.settings.rounds});io.to(r.drawerId).emit("word_options",{options:r.wordChoices});io.to(roomId).except(r.drawerId).emit("word_waiting",{message:"🎨 The drawer is choosing a word..."});sendLobby(roomId)}
+function beginChosenWord(roomId,word){const r=rooms[roomId];if(!r||!r.selectingWord||!r.wordChoices.includes(word))return;r.word=word;r.selectingWord=false;r.gameStarted=true;r.timeLeft=r.settings.drawTime;r.revealedPositions=[];r.strokes=[];io.to(roomId).emit("word_chosen",{wordLength:r.word.length,round:r.round,totalRounds:r.settings.rounds});io.to(roomId).except(r.drawerId).emit("hint_update",{wordLength:r.word.length,maskedWord:createMaskedWord(r.word,[]),hintsRevealed:0,lettersLeft:r.word.replace(/ /g,"").length});io.to(roomId).emit("timer_update",r.timeLeft);r.timer=setInterval(()=>{r.timeLeft--;io.to(roomId).emit("timer_update",r.timeLeft);const hintSeconds=Math.max(1,Math.floor(r.settings.drawTime/(r.settings.hints+1)));if(r.settings.hints>0&&r.timeLeft>0&&r.timeLeft%hintSeconds===0&&r.revealedPositions.length<r.settings.hints)revealHint(roomId);if(r.timeLeft<=0)endRound(roomId)},1000)}
+function endRound(roomId){const r=rooms[roomId];if(!r)return;if(r.timer){clearInterval(r.timer);r.timer=null}const word=r.word;r.gameStarted=false;r.selectingWord=false;io.to(roomId).emit("round_ended",{word});if(r.round>=r.settings.rounds){setTimeout(()=>endGame(roomId),1800);return}r.round++;setTimeout(()=>{if(rooms[roomId]&&rooms[roomId].players.length>=2)startRound(roomId)},2500)}
+function endGame(roomId){const r=rooms[roomId];if(!r)return;const leaderboard=[...r.players].sort((a,b)=>b.score-a.score);io.to(roomId).emit("game_over",{leaderboard:leaderboard.map(p=>({name:p.name,score:p.score,id:p.id})),winner:leaderboard[0]||null});r.gameStarted=false;r.selectingWord=false}
+function startGame(roomId){const r=rooms[roomId];if(!r||r.players.length<2||r.hostId===null)return;if(r.gameStarted||r.selectingWord)return;r.round=1;startRound(roomId)}
 
 io.on("connection",socket=>{
-    socket.on("create_room",playerName=>{
-        let roomId=generateRoomId();
-        while(rooms[roomId])roomId=generateRoomId();
-        rooms[roomId]={players:[],gameStarted:false,selectingWord:false,drawerIndex:-1,drawerId:null,word:"",wordChoices:[],timeLeft:0,timer:null,revealedPositions:[],strokes:[]};
-        rooms[roomId].players.push({id:socket.id,name:playerName,score:0});
-        socket.join(roomId);socket.roomId=roomId;socket.playerName=playerName;
-        socket.emit("room_created",roomId);updatePlayers(roomId);
+    socket.on("create_room",({playerName,settings}={})=>{
+        let roomId=generateRoomId();while(rooms[roomId])roomId=generateRoomId();
+        const safe={maxPlayers:Math.min(20,Math.max(2,Number(settings?.maxPlayers)||10)),rounds:Math.min(10,Math.max(2,Number(settings?.rounds)||3)),drawTime:Math.min(240,Math.max(15,Number(settings?.drawTime)||60)),wordChoices:Math.min(5,Math.max(1,Number(settings?.wordChoices)||3)),hints:Math.min(5,Math.max(0,Number(settings?.hints)||3))};
+        rooms[roomId]={players:[],hostId:socket.id,settings:safe,round:0,gameStarted:false,selectingWord:false,drawerIndex:-1,drawerId:null,word:"",wordChoices:[],timeLeft:0,timer:null,revealedPositions:[],strokes:[]};
+        rooms[roomId].players.push({id:socket.id,name:String(playerName||"Player").trim().slice(0,18),score:0});socket.join(roomId);socket.roomId=roomId;socket.playerName=playerName;socket.emit("room_created",roomId);updatePlayers(roomId);sendLobby(roomId)
     });
-
-    socket.on("join_room",({roomId,playerName})=>{
-        roomId=roomId.trim().toUpperCase();
-        const room=rooms[roomId];
-        if(!room)return socket.emit("room_error","Room not found");
-        if(room.players.length>=MAX_PLAYERS)return socket.emit("room_error",`Room is full (maximum ${MAX_PLAYERS} players)`);
-        room.players.push({id:socket.id,name:playerName,score:0});
-        socket.join(roomId);socket.roomId=roomId;socket.playerName=playerName;
-        socket.emit("room_joined",roomId);updatePlayers(roomId);
-        setTimeout(()=>{if(rooms[roomId]&&rooms[roomId].players.length>=2&&!rooms[roomId].gameStarted&&!rooms[roomId].selectingWord)startRound(roomId)},1000);
-    });
-
-    socket.on("choose_word",({roomId,word})=>{
-        const room=rooms[roomId];
-        if(!room || socket.id!==room.drawerId)return;
-        beginChosenWord(roomId,String(word));
-    });
-
-    socket.on("drawing_start",({roomId,x,y,color,size})=>{
-        const room=rooms[roomId];
-        if(!room||!room.gameStarted||socket.id!==room.drawerId)return;
-        const stroke={color:color||"#111111",size:Number(size)||5,points:[{x,y}]};
-        room.strokes.push(stroke);
-        socket.to(roomId).emit("drawing_start",{x,y,color:stroke.color,size:stroke.size});
-    });
-
-    socket.on("drawing",({roomId,x,y,color,size})=>{
-        const room=rooms[roomId];
-        if(!room||!room.gameStarted||socket.id!==room.drawerId)return;
-        const stroke=room.strokes[room.strokes.length-1];
-        if(!stroke)return;
-        stroke.points.push({x,y});
-        socket.to(roomId).emit("drawing",{x,y,color:color||stroke.color,size:Number(size)||stroke.size});
-    });
-
-    socket.on("undo_drawing",({roomId})=>{
-        const room=rooms[roomId];
-        if(!room||!room.gameStarted||socket.id!==room.drawerId)return;
-        if(!room.strokes.length)return;
-        room.strokes.pop();
-        io.to(roomId).emit("canvas_redraw",{strokes:room.strokes});
-    });
-
-    socket.on("clear_canvas",({roomId})=>{
-        const room=rooms[roomId];
-        if(!room||!room.gameStarted||socket.id!==room.drawerId)return;
-        room.strokes=[];
-        io.to(roomId).emit("canvas_clear");
-    });
-
-    socket.on("send_message",({roomId,playerName,message})=>{
-        const room=rooms[roomId];if(!room)return;
-        message=String(message).trim();if(!message)return;
-        if(room.gameStarted&&socket.id!==room.drawerId&&message.toLowerCase()===room.word.toLowerCase()){
-            const player=room.players.find(p=>p.id===socket.id);if(player)player.score+=10;
-            io.to(roomId).emit("receive_message",{playerName:"🎯 SYSTEM",message:`${playerName} guessed correctly!`});
-            updatePlayers(roomId);endRound(roomId);return;
-        }
-        io.to(roomId).emit("receive_message",{playerName,message});
-    });
-
-    socket.on("disconnect",()=>{
-        const roomId=socket.roomId;if(!roomId||!rooms[roomId])return;
-        const room=rooms[roomId];room.players=room.players.filter(p=>p.id!==socket.id);
-        if(room.timer){clearInterval(room.timer);room.timer=null}
-        updatePlayers(roomId);
-        if(room.players.length===0)delete rooms[roomId];else{room.gameStarted=false;room.selectingWord=false;}
-    });
+    socket.on("join_room",({roomId,playerName})=>{roomId=String(roomId||"").trim().toUpperCase();const r=rooms[roomId];if(!r)return socket.emit("room_error","Room not found");if(r.players.length>=r.settings.maxPlayers)return socket.emit("room_error",`Room is full (maximum ${r.settings.maxPlayers} players)`);if(r.gameStarted||r.selectingWord)return socket.emit("room_error","A game is already in progress");r.players.push({id:socket.id,name:String(playerName||"Player").trim().slice(0,18),score:0});socket.join(roomId);socket.roomId=roomId;socket.playerName=playerName;socket.emit("room_joined",roomId);updatePlayers(roomId);sendLobby(roomId)});
+    socket.on("start_game",({roomId})=>{const r=rooms[roomId];if(!r||socket.id!==r.hostId)return;startGame(roomId)});
+    socket.on("choose_word",({roomId,word})=>{const r=rooms[roomId];if(!r||socket.id!==r.drawerId)return;beginChosenWord(roomId,String(word))});
+    socket.on("drawing_start",({roomId,x,y,color,size})=>{const r=rooms[roomId];if(!r||!r.gameStarted||socket.id!==r.drawerId)return;const stroke={color:color||"#111111",size:Number(size)||5,points:[{x,y}]};r.strokes.push(stroke);socket.to(roomId).emit("drawing_start",{x,y,color:stroke.color,size:stroke.size})});
+    socket.on("drawing",({roomId,x,y,color,size})=>{const r=rooms[roomId];if(!r||!r.gameStarted||socket.id!==r.drawerId)return;const stroke=r.strokes[r.strokes.length-1];if(!stroke)return;stroke.points.push({x,y});socket.to(roomId).emit("drawing",{x,y,color:color||stroke.color,size:Number(size)||stroke.size})});
+    socket.on("undo_drawing",({roomId})=>{const r=rooms[roomId];if(!r||!r.gameStarted||socket.id!==r.drawerId||!r.strokes.length)return;r.strokes.pop();io.to(roomId).emit("canvas_redraw",{strokes:r.strokes})});
+    socket.on("clear_canvas",({roomId})=>{const r=rooms[roomId];if(!r||!r.gameStarted||socket.id!==r.drawerId)return;r.strokes=[];io.to(roomId).emit("canvas_clear")});
+    socket.on("send_message",({roomId,playerName,message})=>{const r=rooms[roomId];if(!r)return;message=String(message).trim();if(!message)return;if(r.gameStarted&&socket.id!==r.drawerId&&message.toLowerCase()===r.word.toLowerCase()){const p=r.players.find(x=>x.id===socket.id);if(p)p.score+=10;io.to(roomId).emit("receive_message",{playerName:"🎯 SYSTEM",message:`${playerName} guessed correctly!`});updatePlayers(roomId);endRound(roomId);return}io.to(roomId).emit("receive_message",{playerName,message})});
+    socket.on("disconnect",()=>{const roomId=socket.roomId;if(!roomId||!rooms[roomId])return;const r=rooms[roomId];r.players=r.players.filter(p=>p.id!==socket.id);if(r.timer){clearInterval(r.timer);r.timer=null}if(socket.id===r.hostId){r.hostId=r.players[0]?.id||null;if(r.hostId)io.to(roomId).emit("host_changed",{hostId:r.hostId})}updatePlayers(roomId);sendLobby(roomId);if(r.players.length===0)delete rooms[roomId];else if(r.players.length<2){r.gameStarted=false;r.selectingWord=false;io.to(roomId).emit("word_waiting",{message:"Waiting for another player..."})}});
 });
 
 const PORT=process.env.PORT||3000;
