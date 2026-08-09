@@ -1,16 +1,113 @@
-# React + Vite
+# 🎨 Skribbl Clone
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A real-time multiplayer drawing and guessing game inspired by Skribbl.io, built with **Node.js, Express, Socket.IO, HTML, CSS, and JavaScript**.
 
-Currently, two official plugins are available:
+## 🚀 Live Demo
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+**Play the deployed game:**
 
-## React Compiler
+https://skribbl-clone-h16k.onrender.com
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## ✨ Features
 
-## Expanding the ESLint configuration
+- 🎮 Create a private game room
+- 👥 Join a room using a room code
+- 🎨 Real-time collaborative drawing
+- 💬 Real-time chat and guessing
+- 🎯 Automatic correct-guess detection
+- 🏆 Player scoring
+- ⏱️ Timed rounds
+- 🔄 Automatic drawer rotation
+- 📱 Browser-based gameplay
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## 🛠️ Tech Stack
+
+### Frontend
+- HTML5
+- CSS3
+- JavaScript
+- HTML Canvas API
+
+### Backend
+- Node.js
+- Express.js
+- Socket.IO
+
+### Deployment
+- Render
+
+## 🎮 Core Game Flow
+
+1. Open the [live game](https://skribbl-clone-h16k.onrender.com).
+2. Enter your player name.
+3. Create a room or enter an existing room code.
+4. A second player joins the room.
+5. The round starts automatically.
+6. The selected drawer receives the secret word.
+7. The drawer draws on the canvas in real time.
+8. Other players submit guesses through chat.
+9. A correct guess awards points and ends the round.
+10. The next round starts with a new drawer and word.
+
+## 📂 Project Structure
+
+```text
+Skribbl.clone/
+├── public/
+│   ├── index.html
+│   ├── script.js
+│   └── style.css
+├── server.js
+├── package.json
+├── package-lock.json
+└── README.md
+```
+
+## 💻 Run Locally
+
+### 1. Clone the repository
+
+```bash
+git clone https://github.com/vansh01verma/Skribbl.clone.git
+cd Skribbl.clone
+```
+
+### 2. Install dependencies
+
+```bash
+npm install
+```
+
+### 3. Start the server
+
+```bash
+npm start
+```
+
+The application will be available at:
+
+```text
+http://localhost:3000
+```
+
+## 🌐 Deployment
+
+The application is deployed as a Node.js web service on Render. The server uses the platform-provided `PORT` environment variable and supports Socket.IO WebSocket connections for real-time multiplayer gameplay.
+
+**Production URL:** https://skribbl-clone-h16k.onrender.com
+
+## 📌 Project Status
+
+- ✅ Publicly deployed
+- ✅ Room creation and joining
+- ✅ Real-time drawing
+- ✅ Real-time guessing/chat
+- ✅ Scoring system
+- ✅ Timed rounds
+- ✅ Automatic round progression
+
+## 👨‍💻 Author
+
+**Vansh Verma**
+
+GitHub: https://github.com/vansh01verma
