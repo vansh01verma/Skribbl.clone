@@ -29,6 +29,15 @@
                 <aside class="sidebar players-card"><h3>Players</h3><ul id="playerList"></ul></aside>
                 <section class="drawing-area">
                     <div id="wordLabel" class="word-box">🔤 Guess the word!</div>
+                    <div id="hintPanel" class="hint-panel hidden" aria-live="polite">
+                        <div class="hint-icon">💡</div>
+                        <div class="hint-content">
+                            <div class="hint-title">WORD HINT</div>
+                            <div id="hintWord" class="hint-word">_ _ _ _ _</div>
+                            <div id="hintProgress" class="hint-progress">Waiting for the first hint...</div>
+                        </div>
+                        <div class="hint-count"><strong id="hiddenLetters">0</strong><span>hidden</span></div>
+                    </div>
                     <div class="canvas-tools-row">
                         <div class="color-palette">
                             <span class="palette-title">COLORS</span>
